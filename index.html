@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Warpath 2026</title>
+<link rel="icon" href="assets/icons/green.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="labels"></div>
+<div id="hitflash"></div>
+
+<!-- TITELSCHERM -->
+<div id="screen-menu" class="screen">
+  <div class="title">
+    <h1><span class="w">WARPATH</span><span class="y">2026</span></h1>
+    <p class="tag">De vernieuwde editie van <b>Warpath: 21st Century</b></p>
+  </div>
+  <div class="menu">
+    <button id="btn-solo" class="big">Solo spelen <small>tegen bots</small></button>
+    <button id="btn-host" class="big">Online spel hosten <small>deel een code met vrienden</small></button>
+    <button id="btn-join" class="big">Meedoen met code</button>
+    <div class="row2"><button id="btn-help">Handleiding</button><button id="btn-credits">Credits</button></div>
+  </div>
+  <div class="foot">Eerbetoon aan <b>Dan Samuel</b> &amp; <b>Synthetic Reality</b> — de makers van Warpath (1994–2006) · <a href="http://www.synthetic-reality.com/history.htm" target="_blank">synthetic-reality.com</a></div>
+</div>
+
+<!-- INSCHRIJVING / LOBBY -->
+<div id="screen-lobby" class="screen hidden">
+  <div class="lobby">
+    <header><button id="lobby-back" class="ghost">← Terug</button><h2 id="lobby-title">Galactische Patrouille</h2>
+      <div id="invite" class="hidden"><span>Spelcode</span><b class="code">…</b><button id="copylink">Kopieer uitnodigingslink</button><div class="status"></div></div>
+    </header>
+    <div class="cols">
+      <section><h3>Kapiteins</h3><div id="lobby-slots"></div></section>
+      <section class="enlist"><h3>Jouw inschrijving</h3>
+        <label class="fld">Naam <input id="en-name" maxlength="20"></label>
+        <div class="fld">Pad<div id="en-paths" class="paths"><button data-path="green"><img src="assets/icons/green.png"><b>Pad van Vrede</b><small>investeren, belasting, groei</small></button><button data-path="red"><img src="assets/icons/red.png"><b>Pad van Oorlog</b><small>wapens, verovering, plaag</small></button></div></div>
+        <div class="fld">Rijk<div id="en-empires" class="empires"></div></div>
+        <div class="fld">Schip<div class="shiprow"><canvas id="en-preview" width="260" height="150"></canvas><div id="en-ships" class="ships"></div></div></div>
+      </section>
+      <section><h3>Missie-instellingen</h3><div id="lobby-settings"></div></section>
+    </div>
+    <footer><span id="lobby-warn" class="warn"></span><span id="lobby-wait" class="hidden">Wachten tot de host op LANCEER drukt…</span><button id="lobby-launch" class="launch">LANCEER</button></footer>
+  </div>
+</div>
+
+<!-- EINDSCHERM -->
+<div id="screen-end" class="screen hidden"><div class="endbox"><h1 id="end-title"></h1><p id="end-sub"></p><div id="end-body"></div><button id="end-menu" class="big">Terug naar het menu</button></div></div>
+<div id="loading" class="hidden"><div>Het universum wordt gecreëerd…</div></div>
+
+<!-- MODALS -->
+<div id="joinbox" class="modal hidden"><div class="mbox"><button class="close">×</button><h2>Meedoen</h2><p>Vul de spelcode in die je van de host kreeg:</p>
+  <input id="joincode" maxlength="6" placeholder="ABCDE" autocomplete="off"><button id="joingo" class="big">Verbinden</button><p class="status"></p></div></div>
+<div id="helpbox" class="modal hidden"><div class="mbox wide"><button class="close">×</button><h2>Handleiding</h2><div class="body"></div></div></div>
+<div id="creditsbox" class="modal hidden"><div class="mbox"><button class="close">×</button><h2>Credits</h2>
+  <img src="assets/srlogo.png" class="srlogo" alt="Synthetic Reality">
+  <p><b>Warpath</b> (1994), <b>Warpath 97</b> en <b>Warpath: 21st Century</b> zijn gemaakt door <b>Dan Samuel</b> van <b>Synthetic Reality</b>, Sunnyvale, Californië — met co-auteur <b>Benjamin Samuel</b> en de hulp van Dangerdav, Marvin en vele beta-testers.</p>
+  <p>Alle originele geluiden, portretten en iconen in deze remake komen uit Warpath: 21st Century en zijn © Synthetic Reality. Ze worden hier met veel respect hergebruikt voor persoonlijk plezier. Bezoek <a href="http://www.synthetic-reality.com/history.htm" target="_blank">synthetic-reality.com</a>.</p>
+  <p><b>Warpath 2026</b> — remake door Joris "Endless" Zuijdervliet, 2026. 3D met three.js, multiplayer met PeerJS.</p>
+  <p class="muted small">(Je hoort nu het originele "beg.wav" van Ben, opgenomen toen hij 9 was.)</p></div></div>
+
+<!-- HUD -->
+<div id="hud" class="hidden">
+  <div id="topbar"></div>
+  <div id="mapbox"><div class="tabs"><button data-act="maptab" data-t="map">Melkweg</button><button data-act="maptab" data-t="pol">Politiek</button><button data-act="map" title="3D sterrenkaart [M]">3D</button></div><canvas id="minimap" width="260" height="260"></canvas><div id="polfaces"></div></div>
+  <div id="shipbox"></div>
+  <div id="scanbox" class="hidden"></div>
+  <div id="sidebtns">
+    <button data-act="win" data-w="guide" title="Planetaire gids [G]"><img src="assets/icons/guide.png"><span>Gids</span></button>
+    <button data-act="win" data-w="captains" title="Kapiteinslijst [Tab]"><img src="assets/icons/status.png"><span>Kapiteins</span></button>
+    <button data-act="win" data-w="chart" title="Bevolkingsgrafiek [J]"><img src="assets/icons/hist.png"><span>Grafiek</span></button>
+    <button data-act="win" data-w="tek" title="Tek-rapport [Y]"><img src="assets/icons/school.png"><span>Tek</span></button>
+    <button data-act="win" data-w="help" title="Handleiding [F1]"><img src="assets/icons/nav.png"><span>Help</span></button>
+    <button data-act="win" data-w="menu" title="Menu [Esc]"><img src="assets/icons/center.png"><span>Menu</span></button>
+  </div>
+  <div id="actionbar"></div>
+  <div id="radio"><div id="radiolog"></div><input id="radioin" placeholder="Enter = radiobericht · begin met ] voor alleen je team" maxlength="200"></div>
+  <div id="win" class="hidden"><div class="wtitle"><span></span><button class="x">×</button></div><div class="wbody"></div></div>
+  <div id="overlay"></div>
+  <div id="toast"></div>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/peerjs.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/sounds.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/sim.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/render.js"></script>
+<script src="js/net.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
