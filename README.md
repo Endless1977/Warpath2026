@@ -28,3 +28,6 @@ Eigen PeerJS-server (bijv. op een Raspberry Pi)? Voeg `?peer=host:poort` toe aan
 - De originele geluiden, portretten en iconen in `assets/` en `js/sounds.js` zijn © Synthetic Reality en worden hier met respect hergebruikt als eerbetoon, voor persoonlijk gebruik.
 - Remake: Joris "Endless" Zuijdervliet, 2026.
 - three.js (MIT) en PeerJS (MIT), zie `vendor/`.
+
+### Graphics
+De kapitein-portretten en iconen zijn in 2026 opnieuw getekend (op basis van de originele Warpath-graphics). De originele opgeschaalde versies staan nog in `assets/portraits_orig/` en `assets/icons_orig/`.

@@ -410,6 +410,11 @@ const App = {
   // ---------- frame ----------
   tick(dt) {
     let view = null;
+    // draaiend scheepsvoorbeeld in de inschrijving
+    if (this.pv && this.pv.ship && !$('#screen-lobby').classList.contains('hidden')) {
+      this.pv.ship.rotation.y += dt * 0.8; this.pv.ship.rotation.x = Math.sin(performance.now() / 1500) * 0.15;
+      this.pv.r.render(this.pv.scene, this.pv.cam);
+    }
     if (this.mode === 'menu' && this.demo) {
       this.demo.step(dt); this.demo.events.length = 0;
       view = this.hostView(this.demo);
