@@ -220,7 +220,11 @@ class Renderer {
     dust.setAttribute('position', new T.BufferAttribute(dp, 3));
     s.add(new T.Points(dust, new T.PointsMaterial({ size: 28, map: this.tex.soft, color: 0x8aa0ff, transparent: true, opacity: 0.55, depthWrite: false, blending: T.AdditiveBlending })));
     // melkwegschijf onder het speelvlak
-    const disc = new T.Mesh(new T.PlaneGeometry(R * 3.1, R * 3.1), new T.MeshBasicMaterial({ map: galaxyTex(), transparent: true, opacity: 0.85, blending: T.AdditiveBlending, depthWrite: false }));
+    // Achtergrond: de aangeleverde spiraalmelkweg (M101), draait langzaam rond. Fallback: procedurele textuur.
+    let gtex;
+    if (window.WP_GALAXY) { const img = new Image(); gtex = new T.Texture(img); gtex.encoding = T.sRGBEncoding; img.onload = () => { gtex.needsUpdate = true; }; img.src = window.WP_GALAXY; }
+    else gtex = galaxyTex();
+    const disc = new T.Mesh(new T.PlaneGeometry(R * (window.WP_GALAXY ? 2.75 : 3.1), R * (window.WP_GALAXY ? 2.75 : 3.1)), new T.MeshBasicMaterial({ map: gtex, transparent: true, opacity: 0.85, blending: T.AdditiveBlending, depthWrite: false }));
     disc.rotation.x = -Math.PI / 2; disc.position.y = -2600; s.add(disc); this.disc = disc;
     const core = new T.Sprite(new T.SpriteMaterial({ map: this.tex.glow, color: 0xffe2b0, transparent: true, opacity: 0.8, blending: T.AdditiveBlending, depthWrite: false }));
     core.scale.set(5200, 5200, 1); core.position.y = -800; s.add(core);
@@ -379,6 +383,9 @@ class Renderer {
       const { o, pl } = this.texQueue.splice(bi, 1)[0];
       o.mesh.material.map = planetTexture(pl.type, pl.tex); o.mesh.material.color.set(0xffffff); o.mesh.material.needsUpdate = true;
     }
+    // melkweg draait (tegen de klok in, zoals het voorbeeld); in het menu sneller
+    this.disc.rotation.z += dt * (opt.menu ? 0.035 : 0.004);
+    this.disc.material.opacity = window.WP_GALAXY ? 0.2 + V.blend * 0.75 : 0.85;
     if (this.barrierMats) for (const m of this.barrierMats) { m.uniforms.t.value = t; m.uniforms.a.value = 0.55 * (1 - V.blend * 0.5); }
     const myPath = me ? me.path : null;
     const mapScale = 1 + V.blend * 1.8;

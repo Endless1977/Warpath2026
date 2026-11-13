@@ -26,6 +26,7 @@ Eigen PeerJS-server (bijv. op een Raspberry Pi)? Voeg `?peer=host:poort` toe aan
 ## Credits
 - **Warpath**, **Warpath 97** en **Warpath: 21st Century** © Synthetic Reality — **Dan Samuel**, met co-auteur **Benjamin Samuel**. https://www.synthetic-reality.com/history.htm
 - De originele geluiden, portretten en iconen in `assets/` en `js/sounds.js` zijn © Synthetic Reality en worden hier met respect hergebruikt als eerbetoon, voor persoonlijk gebruik.
+- Achtergrond-melkweg: Messier 101, beeld NASA/ESA Hubble; draaiende versie geïnspireerd op de animatie van rexisky.
 - Remake: Joris "Endless" Zuijdervliet, 2026.
 - three.js (MIT) en PeerJS (MIT), zie `vendor/`.
 
