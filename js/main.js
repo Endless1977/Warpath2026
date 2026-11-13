@@ -27,6 +27,8 @@ const App = {
     requestAnimationFrame(loop);
     const unlock = () => { WP.Audio.init(); window.removeEventListener('pointerdown', unlock); window.removeEventListener('keydown', unlock); };
     window.addEventListener('pointerdown', unlock); window.addEventListener('keydown', unlock);
+    this.splash(!!q);
+    this.menuSounds();
   },
 
   // ---------- demo achter het titelscherm ----------
@@ -55,6 +57,37 @@ const App = {
     $('#lobby-launch').onclick = () => this.launch();
     $('#copylink').onclick = () => { const l = this.net.inviteLink(); navigator.clipboard?.writeText(l).then(() => WP.UI.toast('Uitnodigingslink gekopieerd!'), () => prompt('Kopieer deze link:', l)); };
     $('#end-menu').onclick = () => this.quit();
+  },
+  // Titelkaart: net als in het origineel klinkt bij het opstarten busterx.wav ("Playing Dramatic Wav File")
+  splash(skip) {
+    const sp = $('#splash');
+    const go = () => {
+      if (sp.dataset.done) return; sp.dataset.done = 1;
+      WP.Audio.init();
+      WP.Audio.playWhenReady('busterx', 0.9);
+      sp.classList.add('boom');
+      setTimeout(() => { this.showScreen('#screen-menu'); sp.classList.add('out'); }, 1700);
+      setTimeout(() => sp.remove(), 2600);
+    };
+    sp.addEventListener('pointerdown', go);
+    window.addEventListener('keydown', go, { once: true });
+    if (skip) { sp.dataset.done = 1; sp.remove(); this.showScreen('#screen-menu'); }
+  },
+  // Menu: gechirp bij het over de knoppen bewegen (chirp7/chirp8 uit het originele hoofdmenu),
+  // inschrijving: chirp2 bij keuzes, click bij klikken
+  menuSounds() {
+    let last = null, alt = 0;
+    document.addEventListener('pointerover', e => {
+      const b = e.target.closest('button'); if (!b || b === last) return;
+      last = b;
+      if (b.closest('#screen-menu') || b.closest('.modal') || b.closest('#screen-end')) WP.Audio.play(alt++ % 2 ? 'chirp8' : 'chirp7', 0.45);
+      else if (b.closest('#screen-lobby')) WP.Audio.play('chirp2', 0.3);
+    });
+    document.addEventListener('pointerout', e => { if (last && !last.contains(e.relatedTarget)) last = null; });
+    document.addEventListener('pointerdown', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.closest('#screen-menu') || b.closest('#screen-lobby') || b.closest('.modal') || b.closest('#screen-end')) WP.Audio.play('click', 0.5);
+    });
   },
   showJoin() { $('#joinbox').classList.remove('hidden'); setTimeout(() => $('#joincode').focus(), 50); },
   showScreen(id) { $$('.screen').forEach(s => s.classList.add('hidden')); if (id) $(id).classList.remove('hidden'); },
