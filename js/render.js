@@ -220,7 +220,7 @@ class Renderer {
     dust.setAttribute('position', new T.BufferAttribute(dp, 3));
     s.add(new T.Points(dust, new T.PointsMaterial({ size: 28, map: this.tex.soft, color: 0x8aa0ff, transparent: true, opacity: 0.55, depthWrite: false, blending: T.AdditiveBlending })));
     // melkwegschijf onder het speelvlak
-    // Achtergrond: de aangeleverde spiraalmelkweg (M101), draait langzaam rond. Fallback: procedurele textuur.
+    // Achtergrond: NGC 4414, de melkweg uit het originele Warpath, draait langzaam rond. Fallback: procedurele textuur.
     let gtex;
     if (window.WP_GALAXY) { const img = new Image(); gtex = new T.Texture(img); gtex.encoding = T.sRGBEncoding; img.onload = () => { gtex.needsUpdate = true; }; img.src = window.WP_GALAXY; }
     else gtex = galaxyTex();
@@ -385,7 +385,7 @@ class Renderer {
     }
     // melkweg draait (tegen de klok in, zoals het voorbeeld); in het menu sneller
     this.disc.rotation.z += dt * (opt.menu ? 0.035 : 0.004);
-    this.disc.material.opacity = window.WP_GALAXY ? 0.2 + V.blend * 0.75 : 0.85;
+    this.disc.material.opacity = window.WP_GALAXY ? 0.12 + V.blend * 0.73 : 0.85;
     if (this.barrierMats) for (const m of this.barrierMats) { m.uniforms.t.value = t; m.uniforms.a.value = 0.55 * (1 - V.blend * 0.5); }
     const myPath = me ? me.path : null;
     const mapScale = 1 + V.blend * 1.8;
