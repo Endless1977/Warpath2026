@@ -4,6 +4,21 @@ Een vernieuwde 3D-editie van **Warpath: 21st Century** — de real-time, multipl
 
 ▶ **Spelen:** https://endless1977.github.io/Warpath2026/
 
+## Screenshots
+
+| | |
+|---|---|
+| ![Titelkaart](docs/screenshots/01_titel.jpg) | ![Hoofdmenu](docs/screenshots/02_menu.jpg) |
+| **Titelkaart** — met het originele opstartgeluid | **Hoofdmenu** — live demo-potje op de achtergrond |
+| ![Inschrijving](docs/screenshots/03_inschrijving.jpg) | ![Gevecht](docs/screenshots/04_gevecht.jpg) |
+| **Inschrijving** — Pad, rijk, schip en missie-instellingen | **Gevecht** — plasma-raketten, neutronbom en laser |
+| ![Sterrenkaart](docs/screenshots/05_sterrenkaart.jpg) | ![Winkel](docs/screenshots/06_winkel.jpg) |
+| **3D-sterrenkaart** (toets M) — 8 octanten en energiebarrières | **Winkel** — Honest Xzyll's Trading Post™ |
+| ![Bank](docs/screenshots/07_bank.jpg) | ![Scan](docs/screenshots/08_scan.jpg) |
+| **Bank** — investeren in planeten en lenen | **Planetaire scan** — draaiende planeet, ontwikkeling en bod op je erts |
+| ![Ruimtedok](docs/screenshots/09_ruimtedok.jpg) | |
+| **Ruimtedok** — kies je 7 gondels | |
+
 ## Wat is Warpath?
 De melkweg is verdeeld in 8 octanten, gescheiden door energiebarrières. Iedere kapitein kiest het **Pad van Vrede** (groen) of het **Pad van Oorlog** (rood) en probeert zoveel mogelijk planeten voor zijn Pad te winnen: erts mijnen en verkopen, investeren in planeten, koloniseren, belasting innen — of de planeten van de tegenstander ontvolken met torpedo's, neutronbommen en de plaag.
 
