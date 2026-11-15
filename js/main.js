@@ -528,6 +528,7 @@ const App = {
     for (const p of v.players) { if (!p.alive || p.respawn > 0 || !this.shipVisible(p) || (this.me && p.id === this.me.id)) continue; const d = (p.ex - g.x) ** 2 + (p.ez - g.z) ** 2; if (d < (70 * ss) ** 2 && d < bd) { bd = d; this.hoverShip = p.id; } }
   },
   fireAtMouse() {
+    this.updateHover();   // altijd met de actuele muispositie
     const g = this.mouse.g, me = this.me; if (!g || !me) return;
     const v = this.view;
     let x = g.x, z = g.z, tid = null;
@@ -535,6 +536,7 @@ const App = {
     this.cmd({ c: 'fire', x, z, tid });
   },
   clickAt() {
+    this.updateHover();   // altijd met de actuele muispositie
     const g = this.mouse.g, me = this.me; if (!g || !me) return;
     const v = this.view, armed = me.warpArmed || me.wormArmed;
     if (!armed) {

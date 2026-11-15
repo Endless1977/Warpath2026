@@ -103,13 +103,13 @@ const UI = {
     this.view = view; this.me = me;
     if (!me) return;
     // Automatisch scannen: komt het schip in een baan, dan opent de planetaire scan.
-    // Bij vertrek sluiten de planeetvensters (scan, bank, winkel, dok) vanzelf.
+    // Bij vertrek sluiten alle open vensters vanzelf (behalve het pauzemenu).
     const orbit = me.alive && !(me.respawn > 0) ? me.orbit : null;
     if (this._lastOrbit === undefined) this._lastOrbit = orbit;   // niet bij de start van het spel
     else if (orbit !== this._lastOrbit) {
       const planetWin = ['scan', 'bank', 'shop', 'dock'].includes(this.win);
       if (orbit != null && (!this.win || planetWin)) { this.scanPlanet = null; this.win = null; this.open('scan'); WP.Audio.play('guide', 0.25); }
-      else if (orbit == null && planetWin) this.close();
+      else if (orbit == null && this.win && this.win !== 'menu') this.close();   // wegvliegen: alle vensters dicht, zodat je je schip weer ziet
       this._lastOrbit = orbit;
     }
     this.topbar(view, me); this.shipbox(view, me); this.actionbar(view, me); this.scanbox(view, me); this.minimap(view, me); this.overlay(view, me);
