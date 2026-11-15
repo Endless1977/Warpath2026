@@ -75,10 +75,14 @@ const UI = {
     }
   },
 
-  open(w, arg) {
-    if (this.win === w && arg == null) { this.close(); return; }
+  open(w, arg, side) {
+    if (this.win === w && arg == null && !side) { this.close(); return; }
     this.win = w; this.winArg = arg;
-    $('#win').classList.remove('hidden'); $('#win').dataset.w = w;
+    const el = $('#win');
+    el.classList.remove('hidden'); el.dataset.w = w;
+    // planeetvensters staan opzij, zodat het schip in het midden klikbaar blijft
+    el.classList.toggle('side', ['scan', 'bank', 'shop', 'dock'].includes(w));
+    el.style.left = el.style.top = el.style.transform = '';
     if (w === 'shop' || w === 'dock' || w === 'bank') WP.Audio.play(w === 'dock' ? 'craneup' : 'service', 0.35);
     this.refresh(true);
   },
@@ -108,7 +112,7 @@ const UI = {
     if (this._lastOrbit === undefined) this._lastOrbit = orbit;   // niet bij de start van het spel
     else if (orbit !== this._lastOrbit) {
       const planetWin = ['scan', 'bank', 'shop', 'dock'].includes(this.win);
-      if (orbit != null && (!this.win || planetWin)) { this.scanPlanet = null; this.win = null; this.open('scan'); WP.Audio.play('guide', 0.25); }
+      if (orbit != null && (!this.win || planetWin)) { this.scanPlanet = null; this.win = null; this.open('scan', null, true); WP.Audio.play('guide', 0.25); }
       else if (orbit == null && this.win && this.win !== 'menu') this.close();   // wegvliegen: alle vensters dicht, zodat je je schip weer ziet
       this._lastOrbit = orbit;
     }

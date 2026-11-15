@@ -543,9 +543,10 @@ const App = {
     const g = this.mouse.g, me = this.me; if (!g || !me) return;
     const v = this.view, armed = me.warpArmed || me.wormArmed;
     if (!armed) {
-      if (this.hoverPlanet != null) return this.cmd({ c: 'orbitPlanet', id: this.hoverPlanet });
+      if (this.hoverPlanet != null) { const pl = v.planets.find(p => p.id === this.hoverPlanet); if (pl) this.renderer.pulse(pl.x, pl.z, pl.r * 2.2, 0xffffff); return this.cmd({ c: 'orbitPlanet', id: this.hoverPlanet }); }
       for (const gt of v.gates) for (const [x, z] of [[gt.ax, gt.az], [gt.bx, gt.bz]]) if ((x - g.x) ** 2 + (z - g.z) ** 2 < 110 * 110 * (1 + this.renderer.view.blend * 3) ** 2) return this.cmd({ c: 'gate', id: gt.id });
     }
+    this.renderer.pulse(g.x, g.z, 90 * (1 + this.renderer.view.blend * 6), armed ? 0xb48cff : 0x7fd8ff);
     this.cmd({ c: 'course', x: g.x, z: g.z, map: armed || this.renderer.view.mode === 'map' });
   },
   bindInput() {
@@ -555,7 +556,7 @@ const App = {
       M.x = e.clientX; M.y = e.clientY; M.overUI = e.target !== cv;
       if (M.drag && (M.drag.btn === 0 || M.drag.btn === 1)) {
         const dx = e.clientX - M.drag.x, dy = e.clientY - M.drag.y;
-        if (Math.abs(dx) + Math.abs(dy) > 6) M.drag.moved = true;
+        if (Math.abs(dx) + Math.abs(dy) > 14 && performance.now() - M.drag.t0 > 150) M.drag.moved = true;
         if (M.drag.moved) {
           const V = this.renderer.view;
           if (V.mode === 'map') { V.mapYaw -= (e.clientX - M.drag.lx) * 0.005; V.mapPitch = Math.max(0.25, Math.min(1.5, V.mapPitch + (e.clientY - M.drag.ly) * 0.004)); }
@@ -566,13 +567,15 @@ const App = {
     });
     cv.addEventListener('pointerdown', e => {
       if (this.mode !== 'game') return;
+      M.x = e.clientX; M.y = e.clientY; M.overUI = false;
+      if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
       if (e.button === 2) { this.fireAtMouse(); M.fireHeld = true; M.fireT = 0.4; return; }
-      M.drag = { btn: e.button, x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY, moved: false };
+      M.drag = { btn: e.button, x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY, moved: false, t0: performance.now() };
       cv.setPointerCapture(e.pointerId);
     });
     window.addEventListener('pointerup', e => {
       if (e.button === 2) M.fireHeld = false;
-      if (M.drag && e.button === M.drag.btn) { if (!M.drag.moved && M.drag.btn === 0 && this.mode === 'game') this.clickAt(); M.drag = null; }
+      if (M.drag && e.button === M.drag.btn) { if (!M.drag.moved && M.drag.btn === 0 && this.mode === 'game') { M.x = M.drag.x; M.y = M.drag.y; M.overUI = false; this.clickAt(); } M.drag = null; }
     });
     cv.addEventListener('wheel', e => {
       e.preventDefault();
