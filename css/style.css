@@ -75,7 +75,13 @@ button.big small { display: block; font-family: var(--fb); font-size: 13px; colo
 .empires img { width: 100%; max-width: 64px; border-radius: 8px; }
 .shiprow { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
 #en-preview { background: radial-gradient(circle, rgba(60, 90, 160, .35), transparent 70%); border-radius: 10px; border: 1px solid var(--line); width: 260px; height: 150px; }
-.ships { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; }
+.ships { margin-top: 8px; }
+.ships .grp { display: block; color: var(--mut); font-size: 12px; margin: 6px 0 4px; letter-spacing: .05em; }
+.ships .sg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.ships .sg.orig { grid-template-columns: repeat(6, 1fr); }
+.ships .sg.orig button { display: flex; flex-direction: column; align-items: center; padding: 3px 2px; font-size: 10px; line-height: 1.05; }
+.ships .sg.orig img { width: 36px; height: 36px; image-rendering: pixelated; }
+.shiprow { justify-content: center; }
 .set { margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; } .set span { font-weight: 600; color: var(--mut); } .set small { color: var(--mut); }
 .checks { display: grid; grid-template-columns: 1fr; gap: 4px; }
 .chk { display: flex; gap: 8px; align-items: center; cursor: pointer; }

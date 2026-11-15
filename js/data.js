@@ -25,6 +25,10 @@ WP.SHIP_DESIGNS = [
   { id: 0, name: 'Schotel' }, { id: 1, name: 'Lander' }, { id: 2, name: 'Kruiser X' },
   { id: 3, name: 'Pijl' }, { id: 4, name: 'Ringschip' }, { id: 5, name: 'Manta' },
 ];
+// De 18 originele schepen uit Warpath: 21st Century, als 3D-blokjes (voxels)
+[['A', 'Verkenner'], ['B', 'Jager'], ['C', 'Smiley'], ['D', 'Krab'], ['E', 'Moederschip'], ['F', 'Kruiser'], ['G', 'Komeet'], ['H', 'Schedel'], ['I', 'Het Oog'],
+ ['J', 'Draak'], ['K', 'Sterrenwolk'], ['L', 'Spook'], ['M', 'Vliegende schotel'], ['N', 'Maanlander'], ['O', 'Sfinx'], ['P', 'Ring'], ['Q', 'X-vleugel'], ['R', 'Pijlpunt']]
+  .forEach(([L, n], i) => WP.SHIP_DESIGNS.push({ id: 6 + i, name: n, orig: L }));
 
 // Wapenkracht (kJ op het doelpunt, onbeschermd) — uit "Relative Weapons Strength"
 // Items — prijzen, maxima en productiesnelheid uit het originele tekreport.txt

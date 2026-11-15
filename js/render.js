@@ -103,7 +103,32 @@ function planetTexture(type, seed) {
 }
 
 // ---------- scheepsmodellen ----------
+// Originele bitmap -> 3D-blokjes. Elke pixel wordt een blokje; lichtere pixels steken hoger uit.
+// Bovenkant van de bitmap = neus van het schip (+X). Meerdere frames = animatie.
+const voxelCache = {};
+function buildVoxelShip(letter, scale) {
+  const frames = (window.WP_SHIPSPRITES || {})[letter]; if (!frames) return buildShip(0, 0xffffff, scale);
+  const g = new T.Group(), V = 3.0;
+  const box = voxelCache.box || (voxelCache.box = new T.BoxGeometry(1, 1, 1));
+  const mat = new T.MeshStandardMaterial({ metalness: 0.35, roughness: 0.5 });
+  const m = new T.Matrix4(), c = new T.Color();
+  g.userData.frames = frames.map((vox, fi) => {
+    const mesh = new T.InstancedMesh(box, mat, vox.length);
+    vox.forEach(([x, y, r, gg, b], i) => {
+      const lum = (r + gg + b) / 765, h = (1 + lum * 4) * V * 0.55;
+      m.makeScale(V, h, V); m.setPosition((15.5 - y) * V, h / 2 - V, (x - 15.5) * V);
+      mesh.setMatrixAt(i, m);
+      c.setRGB(r / 255 * 0.82, gg / 255 * 0.82, b / 255 * 0.82).convertSRGBToLinear(); mesh.setColorAt(i, c);
+    });
+    mesh.visible = fi === 0; g.add(mesh); return mesh;
+  });
+  g.scale.setScalar(scale * 0.62);
+  return g;
+}
+
 function buildShip(design, pathColor, scale = 1) {
+  const D = WP.SHIP_DESIGNS[design];
+  if (D && D.orig) return buildVoxelShip(D.orig, scale);
   const g = new T.Group();
   const hull = new T.MeshStandardMaterial({ color: 0xb8c2d6, metalness: 0.75, roughness: 0.32 });
   const dark = new T.MeshStandardMaterial({ color: 0x3a4152, metalness: 0.6, roughness: 0.5 });
@@ -422,6 +447,8 @@ class Renderer {
       let dy = yaw - o.ry; while (dy > Math.PI) dy -= Math.PI * 2; while (dy < -Math.PI) dy += Math.PI * 2;
       o.ry += dy * Math.min(1, dt * 8); o.model.rotation.y = o.ry;
       o.model.rotation.x = Math.sin(t * 1.3 + p.octant) * 0.06; o.model.position.y = Math.sin(t * 2 + p.octant) * 4;
+      const fr = o.model.userData.frames;
+      if (fr && fr.length > 1) { const k = Math.floor(t * 5 + p.octant) % fr.length; fr.forEach((f, i) => f.visible = i === k); }
       const sp = p.orbit ? 2 : p.speed;
       o.engine.position.set(-Math.cos(-o.ry) * 46, 2, -Math.sin(-o.ry) * 46);
       o.engine.scale.setScalar(20 + sp * 9); o.engine.material.opacity = sp > 0 ? 0.9 : 0.25;

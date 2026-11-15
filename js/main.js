@@ -35,7 +35,7 @@ const App = {
   // ---------- demo achter het titelscherm ----------
   startDemo() {
     const en = [];
-    for (let i = 0; i < 6; i++) en.push({ id: 'd' + i, name: WP.BOT_NAMES[i], human: false, path: i % 2 ? 'red' : 'green', empire: i * 2, design: i % 6, octant: [0, 1, 3, 4, 5, 7][i], aiLevel: 3 });
+    for (let i = 0; i < 6; i++) en.push({ id: 'd' + i, name: WP.BOT_NAMES[i], human: false, path: i % 2 ? 'red' : 'green', empire: i * 2, design: [0, 23, 2, 18, 4, 22][i], octant: [0, 1, 3, 4, 5, 7][i], aiLevel: 3 });
     this.demo = new WP.Sim({ timeLimit: 0, cash: 2000000, tek: 5, map: 'normal' }, en, 2026);
     for (const p of this.demo.players) p.visited = this.demo.planets.map(q => q.id);
     for (let i = 0; i < 30 * 40; i++) this.demo.step(1 / 30);
@@ -139,7 +139,7 @@ const App = {
     const g = L.slots.filter(s => s.path === 'green').length, r = L.slots.length - g;
     let emp = 0; while (used.has(emp) && emp < 14) emp++;
     const name = WP.BOT_NAMES.find(n => !names.has(n)) || 'Bot';
-    L.slots.push({ id: 'bot' + Math.random().toString(36).slice(2, 7), name, human: false, path: g <= r ? 'green' : 'red', empire: emp, design: Math.floor(Math.random() * 6) });
+    L.slots.push({ id: 'bot' + Math.random().toString(36).slice(2, 7), name, human: false, path: g <= r ? 'green' : 'red', empire: emp, design: Math.floor(Math.random() * WP.SHIP_DESIGNS.length) });
     if (!silent) this.lobbyChanged();
   },
   lobbyChanged() {
@@ -170,7 +170,7 @@ const App = {
     if (m.t === 'hello' || m.t === 'enlist') {
       const s = this.lobby && this.lobby.slots.find(s => s.id === id); if (!s || this.mode === 'game') return;
       const e = m.enlist || m;
-      s.name = String(e.name || s.name).slice(0, 20); s.path = e.path === 'red' ? 'red' : 'green'; s.empire = Math.max(0, Math.min(14, e.empire | 0)); s.design = Math.max(0, Math.min(5, e.design | 0));
+      s.name = String(e.name || s.name).slice(0, 20); s.path = e.path === 'red' ? 'red' : 'green'; s.empire = Math.max(0, Math.min(14, e.empire | 0)); s.design = Math.max(0, Math.min(WP.SHIP_DESIGNS.length - 1, e.design | 0));
       this.lobbyChanged();
     } else if (m.t === 'cmd' && this.sim) this.sim.command(id, m.cmd);
   },
@@ -192,7 +192,9 @@ const App = {
       $('#en-empires').innerHTML = WP.EMPIRES.map((em, i) => `<button data-emp="${i}" title="${em.name}"><img src="assets/portraits/alien${em.portrait}.png"><span>${em.name}</span></button>`).join('');
       $('#en-empires').onclick = e => { const b = e.target.closest('[data-emp]'); if (b) { E.empire = +b.dataset.emp; this.enlistChanged(); } };
       $('#en-paths').onclick = e => { const b = e.target.closest('[data-path]'); if (b) { E.path = b.dataset.path; this.enlistChanged(); } };
-      $('#en-ships').innerHTML = WP.SHIP_DESIGNS.map(s => `<button data-ship="${s.id}">${s.name}</button>`).join('');
+      const sb = s => `<button data-ship="${s.id}" title="${s.name}${s.orig ? ' (origineel ' + s.orig + ')' : ''}">${s.orig ? `<img src="assets/ships/${s.orig}.png">` : ''}<span>${s.name}</span></button>`;
+      $('#en-ships').innerHTML = `<small class="grp">Modern 3D</small><div class="sg">${WP.SHIP_DESIGNS.filter(s => !s.orig).map(sb).join('')}</div>
+        <small class="grp">Origineel (Warpath 21st Century)</small><div class="sg orig">${WP.SHIP_DESIGNS.filter(s => s.orig).map(sb).join('')}</div>`;
       $('#en-ships').onclick = e => { const b = e.target.closest('[data-ship]'); if (b) { E.design = +b.dataset.ship; this.enlistChanged(); } };
       this.initPreview();
     }
@@ -257,7 +259,7 @@ const App = {
     this.pv = { r: new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }), scene: new THREE.Scene(), cam: new THREE.PerspectiveCamera(35, cv.width / cv.height, 1, 1000) };
     this.pv.r.outputEncoding = THREE.sRGBEncoding; this.pv.r.toneMapping = THREE.ACESFilmicToneMapping;
     this.pv.scene.add(new THREE.HemisphereLight(0x99aaff, 0x221122, 0.8)); const d = new THREE.DirectionalLight(0xffffff, 1.8); d.position.set(1, 2, 1.5); this.pv.scene.add(d);
-    this.pv.cam.position.set(0, 70, 150); this.pv.cam.lookAt(0, 0, 0);
+    this.pv.cam.position.set(0, 115, 125); this.pv.cam.lookAt(0, 0, 0);
   },
   updatePreview() {
     if (!this.pv) return;
@@ -414,7 +416,8 @@ const App = {
     let view = null;
     // draaiend scheepsvoorbeeld in de inschrijving
     if (this.pv && this.pv.ship && !$('#screen-lobby').classList.contains('hidden')) {
-      this.pv.ship.rotation.y += dt * 0.8; this.pv.ship.rotation.x = Math.sin(performance.now() / 1500) * 0.15;
+      this.pv.ship.rotation.y += dt * 0.8;
+      const fr = this.pv.ship.userData.frames; if (fr && fr.length > 1) { const k = Math.floor(performance.now() / 200) % fr.length; fr.forEach((f, i) => f.visible = i === k); } this.pv.ship.rotation.x = Math.sin(performance.now() / 1500) * 0.15;
       this.pv.r.render(this.pv.scene, this.pv.cam);
     }
     if (this.mode === 'menu' && this.demo) {

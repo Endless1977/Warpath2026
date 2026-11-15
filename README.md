@@ -25,7 +25,7 @@ De melkweg is verdeeld in 8 octanten, gescheiden door energiebarrières. Iedere 
 Alle spelregels komen uit de originele helpfile en het tekreport van Warpath 21st Century: 25 items over 10 Tek-niveaus (met de originele prijzen), 6 investeringscategorieën, de First Galactic Bank, noodsignalen, drones, wormgaten, warp, stealth, sonic scream, android slave ships, buster bombs en de missie-instellingen (Normaal/Leeg/Dicht/Power-kaart, bot-niveau van *Kanonnenvoer* tot *Krankzinnig*, tijdslimiet, enz.).
 
 ## Nieuw in 2026
-- Volledige 3D-weergave (three.js) met procedurele planeten, 6 scheepsontwerpen, schildbollen, explosies en een **draaibare 3D-sterrenkaart** (toets **M**).
+- Volledige 3D-weergave (three.js) met procedurele planeten, 6 moderne scheepsontwerpen **plus de 18 originele Warpath-schepen** (de oude bitmaps omgezet naar 3D-blokjes, mét hun knipperende animatie), schildbollen, explosies en een **draaibare 3D-sterrenkaart** (toets **M**).
 - **Makkelijk verbinden:** geen modems, IPX of telnet meer. De host krijgt een **spelcode** en een **uitnodigingslink**; vrienden klikken op de link en zitten in de lobby. (WebRTC via PeerJS, de host draait de simulatie.)
 - Tot 8 kapiteins, aangevuld met bots. Valt een speler weg, dan neemt een bot het over.
 - Duidelijke HUD: meters, live scan, winkel met uitleg waarom iets (nog) niet te koop is, ruimtedok, gids, kapiteinslijst, bevolkingsgrafiek, Tek-rapport en een Nederlandse handleiding (F1).
