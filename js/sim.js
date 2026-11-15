@@ -125,6 +125,7 @@ class Sim {
       for (const k in pl.dev) pl.dev[k] = 0.04 + rnd() * 0.22;
       pl.love = (rnd() - 0.5) * 200;
     }
+    pl.ore0 = pl.ore;   // beginvoorraad erts (voor de voorraadbalk)
     pl.cash = pl.pop * 1.5;
     if (pl.pop > 0) for (const it of WP.ITEMS) if (this.itemAllowed(it) && it.dev <= this.devLevel(pl)) pl.stock[it.id] = Math.max(it.maxP > 50 ? 1 : 0, Math.round(it.maxP * (0.25 + rnd() * 0.3)));
     return pl;
@@ -971,7 +972,7 @@ class Sim {
     if (full) {
       s.planets = this.planets.map(pl => ({
         id: pl.id, name: pl.name, x: r(pl.x), z: r(pl.z), r: r(pl.r), oct: pl.oct, type: pl.type, tex: pl.tex, empire: pl.empire, pop: r(pl.pop), maxPop: r(pl.maxPop),
-        ore: r(pl.ore), cash: r(pl.cash), love: r(pl.love), dev: roundObj(pl.dev, 3), cap: roundObj(pl.cap, 0), plague: +pl.plague.toFixed(3), distress: pl.distress,
+        ore: r(pl.ore), ore0: r(pl.ore0), cash: r(pl.cash), love: r(pl.love), dev: roundObj(pl.dev, 3), cap: roundObj(pl.cap, 0), plague: +pl.plague.toFixed(3), distress: pl.distress,
         shields: +pl.shields.toFixed(1), stock: roundObj(pl.stock, 0, true), colonists: r(pl.colonists), spies: pl.spies, homeOf: pl.homeOf,
       }));
       s.history = this.history; s.colBonus = this.colBonus; s.settings = this.settings;

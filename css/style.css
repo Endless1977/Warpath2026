@@ -232,3 +232,7 @@ table.tek th { width: 40px; font-family: var(--fh); color: var(--cy); } table.te
 #win.side .invest .ivr { grid-template-columns: 30px 1fr 42px 92px; }
 @keyframes spin2 { from { background-position: 0 0; } to { background-position: -300px 0; } }
 #win.side .globe { animation-name: spin2; }
+
+.orebar { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 38px; align-items: center; gap: 6px; margin: 1px 0 3px; }
+.orebar .bar { height: 8px; } .orebar small { text-align: right; color: var(--mut); font-size: 12px; }
+.minibar { display: inline-block; vertical-align: middle; width: 46px; height: 5px; margin-left: 6px; background: rgba(0,0,0,.5); border-radius: 3px; overflow: hidden; } .minibar b { display: block; height: 100%; }

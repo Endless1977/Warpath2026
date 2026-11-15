@@ -202,14 +202,21 @@ const UI = {
       <div class="phead"><span class="dot" style="background:${AURA_CSS[a]}"></span><b>${pl.distress && known ? '❗ ' : ''}${esc(pl.name)}</b><span class="aura" style="color:${AURA_CSS[a]}">${AURA_NL[a]}</span></div>
       ${known ? `<div class="pgrid">
         <span>Rijk</span><b>${emp}</b><span>Bevolking</span><b>${WP.fmt(pl.pop)}</b>
-        <span>Erts</span><b>${WP.fmt(pl.ore)} t</b><span>Ontwikkeling</span><b>${pct(C.devAvg(pl))}</b>
+        <span>Erts</span><b>${WP.fmt(pl.ore)} t</b>${pl.pop <= 0 ? this.oreBar(pl) : ''}<span>Ontwikkeling</span><b>${pct(C.devAvg(pl))}</b>
         ${pl.pop > 0 ? `<span>Ertsprijs</span><b>${C.orePrice(pl)} cr/t</b>` : ''}${pl.plague > 0 ? `<span>Plaag</span><b class="plague">${pct(Math.min(1, pl.plague))}</b>` : ''}
       </div>
       ${pl.pop > 0 ? `<div class="love" title="Houding: links = Pad van Oorlog, rechts = Pad van Vrede"><span class="r"></span><span class="g"></span><i style="left:${50 + love * 50}%"></i></div>` : ''}` : '<div class="muted">Nog niet bezocht. Ga in een baan om de status te leren kennen.</div>'}
     </div>`;
   },
 
-  scanbox(v, me) {
+  // voorraadbalk erts voor onbewoonde planeten: groen = vol, oranje = raakt op, rood = bijna leeg
+  oreBar(pl) {
+    const f = Math.max(0, Math.min(1, pl.ore / Math.max(1, pl.ore0 || pl.ore)));
+    const col = f > 0.5 ? 'linear-gradient(90deg,#2bd96b,#7dffb0)' : f > 0.2 ? 'linear-gradient(90deg,#e08a1e,#ffc35a)' : 'linear-gradient(90deg,#c62828,#ff6b6b)';
+    return `<div class="orebar" title="Nog ${Math.round(f * 100)}% van de oorspronkelijke ertsvoorraad over">${bar(f, col)}<small>${Math.round(f * 100)}%</small></div>`;
+  },
+
+    scanbox(v, me) {
     const id = this.app.hoverPlanet != null ? this.app.hoverPlanet : me.orbit;
     const pl = id != null ? v.planets.find(p => p.id === id) : null;
     const el = $('#scanbox');
@@ -411,7 +418,7 @@ const UI = {
     return `${live ? '' : '<p class="small warnbox">Zonder <b>Planetary Guide</b> zie je alleen namen en Pad-kleuren. Koop er één in een winkel voor live bevolking, erts, prijzen en liefde.</p>'}
       <table class="guide"><tr>${th('name', 'Planeet')}${th('empire', 'Rijk')}${live ? th('pop', 'Bevolking') + th('ore', 'Erts') + th('price', 'Prijs') + th('dev', 'Ontw.') + th('love', 'Liefde') + th('plague', 'Plaag') : ''}${th('dist', 'Afstand')}<th></th></tr>
       ${list.map(pl => { const a = C.aura(pl); return `<tr><td><span class="dot" style="background:${AURA_CSS[a]}"></span>${pl.distress ? '❗' : ''}${esc(pl.name)}</td><td>${pl.empire >= 0 ? WP.EMPIRES[pl.empire].name : '—'}</td>
-        ${live ? `<td>${WP.fmt(pl.pop)}</td><td>${WP.fmt(pl.ore)}</td><td>${pl.pop > 0 ? C.orePrice(pl) : '—'}</td><td>${pct(C.devAvg(pl))}</td><td style="color:${pl.love > 0 ? '#3dff7a' : '#ff6b6b'}">${Math.round(pl.love)}</td><td>${pl.plague > 0 ? pct(Math.min(1, pl.plague)) : ''}</td>` : ''}
+        ${live ? `<td>${WP.fmt(pl.pop)}</td><td>${WP.fmt(pl.ore)}${pl.pop <= 0 ? `<i class="minibar"><b style="width:${Math.max(0, Math.min(100, pl.ore / Math.max(1, pl.ore0 || pl.ore) * 100))}%;background:${pl.ore / Math.max(1, pl.ore0 || pl.ore) > 0.5 ? '#3dff7a' : pl.ore / Math.max(1, pl.ore0 || pl.ore) > 0.2 ? '#ffb347' : '#ff5555'}"></b></i>` : ''}</td><td>${pl.pop > 0 ? C.orePrice(pl) : '—'}</td><td>${pct(C.devAvg(pl))}</td><td style="color:${pl.love > 0 ? '#3dff7a' : '#ff6b6b'}">${Math.round(pl.love)}</td><td>${pl.plague > 0 ? pct(Math.min(1, pl.plague)) : ''}</td>` : ''}
         <td>${WP.fmt(Math.hypot(pl.x - me.x, pl.z - me.z))}</td>
         <td class="acts"><button data-act="scan" data-id="${pl.id}">Scan</button><button data-act="course" data-id="${pl.id}">Koers</button>${warp ? `<button data-act="warpto" data-id="${pl.id}">Warp</button>` : ''}</td></tr>`; }).join('')}</table>`;
   },
