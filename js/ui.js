@@ -102,6 +102,16 @@ const UI = {
     this._acc = 0; this._force = false;
     this.view = view; this.me = me;
     if (!me) return;
+    // Automatisch scannen: komt het schip in een baan, dan opent de planetaire scan.
+    // Bij vertrek sluiten de planeetvensters (scan, bank, winkel, dok) vanzelf.
+    const orbit = me.alive && !(me.respawn > 0) ? me.orbit : null;
+    if (this._lastOrbit === undefined) this._lastOrbit = orbit;   // niet bij de start van het spel
+    else if (orbit !== this._lastOrbit) {
+      const planetWin = ['scan', 'bank', 'shop', 'dock'].includes(this.win);
+      if (orbit != null && (!this.win || planetWin)) { this.scanPlanet = null; this.win = null; this.open('scan'); WP.Audio.play('guide', 0.25); }
+      else if (orbit == null && planetWin) this.close();
+      this._lastOrbit = orbit;
+    }
     this.topbar(view, me); this.shipbox(view, me); this.actionbar(view, me); this.scanbox(view, me); this.minimap(view, me); this.overlay(view, me);
     if (this.win) this.renderWin(view, me);
   },
@@ -324,6 +334,7 @@ const UI = {
         <div class="pgrid"><span>Ontwikkelingsniveau</span><b>${WP.fmt(C.devLevel(pl))}</b><span>Planetaire schilden</span><b>${Math.floor(pl.shields)}</b><span>Kolonisten beschikbaar</span><b>${WP.fmt(pl.colonists)}</b><span>Kas</span><b>${WP.fmt(pl.cash)} cr</b></div>` : ''}
       </div></div>
       ${offer}
+      ${inOrbit && pl.pop <= 0 ? `<div class="row"><button class="${pl.ore > 0 && me.cargo < C.cargoMax(me) ? 'pri' : 'dis'}" data-act="mine">${icon('mining')} ${me.mining ? 'Stop mijnen' : 'Start mijnen'} (${WP.fmt(me.cargo)} / ${WP.fmt(C.cargoMax(me))} t)</button></div>` : ''}
       ${inOrbit ? `<div class="row"><button class="${canCol ? 'pri' : 'dis'}" data-act="colonize">${icon('colonize')} Koloniseer (${WP.fmt(me.colonists)} aan boord)</button></div>
         <p class="muted small">Koloniseren kan op onbewoonde planeten (claimt de planeet voor jouw Pad) of op planeten van je eigen rijk. Minimaal 200 kolonisten; die haal je automatisch op bij ontwikkelde planeten van je eigen Pad of rijk.</p>` : ''}`;
   },

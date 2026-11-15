@@ -290,7 +290,7 @@ const App = {
     const V = this.renderer.view; V.mode = 'tactical'; V.blend = 1; V.zoom = 2300; V.mapZoom = 27000; V.mapPitch = 0.85;
     this.showScreen(null); $('#hud').classList.remove('hidden');
     $('#radiolog').innerHTML = '';
-    WP.UI.close();
+    WP.UI.close(); WP.UI._lastOrbit = undefined;
     WP.Audio.startAmbient();
     WP.Audio.play('guide', 0.6);
   },
