@@ -18,6 +18,7 @@ const App = {
     this.me = null;
     this.enlist = store.get('enlist', { name: 'Kapitein ' + ['Nova', 'Orion', 'Vega', 'Rigel'][Math.floor(Math.random() * 4)], path: 'green', empire: 0, design: 0 });
     this.settings = Object.assign(WP.DEFAULT_SETTINGS(), store.get('settings', {}));
+    if (this.settings.gameSpeed == null) this.settings.gameSpeed = 2;
     this.startDemo();
     this.menuBind();
     const q = new URLSearchParams(location.search).get('join');
@@ -223,6 +224,7 @@ const App = {
     const chk = (k, l, tip) => `<label class="chk" title="${tip || ''}"><input type="checkbox" data-set="${k}" ${S[k] ? 'checked' : ''} ${dis}> ${l}</label>`;
     $('#lobby-settings').innerHTML = `
       <div class="set"><span>Melkweg</span>${sel('map', Object.entries(WP.MAPS).map(([k, m]) => [k, m.name]))}<small>${WP.MAPS[S.map].desc}</small></div>
+      <div class="set"><span>Spelsnelheid</span>${sel('gameSpeed', [[1, 'Klassiek (zoals het origineel)'], [2, 'Snel'], [3, 'Turbo']])}<small>Hoe snel bevolking groeit, belasting binnenkomt en winkels aanvullen.</small></div>
       <div class="set"><span>Bot-intelligentie</span>${sel('aiLevel', WP.AI_LEVELS.map((l, i) => [i, l]))}</div>
       <div class="set"><span>Startkapitaal</span>${sel('cash', [[50000, '50.000'], [100000, '100.000'], [250000, '250.000'], [1000000, '1 miljoen'], [10000000, '10 miljoen (schieten!)']])}</div>
       <div class="set"><span>Start Tek-niveau</span>${sel('tek', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(t => [t, WP.TEK_ROMAN[t]]))}</div>

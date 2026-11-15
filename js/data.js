@@ -31,7 +31,7 @@ WP.SHIP_DESIGNS = [
 // kind: weapon (projectiel, gebruikt slot), device (activeerbaar, gebruikt slot), passive (geen slot)
 WP.ITEMS = [
   // TEK I
-  { id: 'torpedo', name: 'Phased-Matter Torpedo', tek: 1, price: 110, maxP: 10000, maxS: 500, rate: 56888, dev: 600, kind: 'weapon', dmg: 1000, blast: 70, speed: 700, cost: 15,
+  { id: 'torpedo', name: 'Phased-Matter Torpedo', tek: 1, price: 110, maxP: 10000, maxS: 500, rate: 56888, dev: 600, kind: 'weapon', dmg: 1000, blast: 70, speed: 1000, cost: 15,
     desc: 'De standaard torpedo. Vliegt naar het aangeklikte punt en ontploft. Ongeveer twee keer zo sterk als een volle laser.' },
   { id: 'shield', name: 'Defensive Shield Layer', tek: 1, price: 25000, maxP: 100, maxS: 5, rate: 2844, dev: 3000, kind: 'passive',
     desc: 'Elke schildlaag halveert de schade. 5 lagen = 32× sterker. Schilden worden heet en knappen als ze te veel incasseren. Met 5 lagen overleef je de energiebarrière.' },
@@ -48,29 +48,29 @@ WP.ITEMS = [
   { id: 'laser', name: 'Standard Ship Laser', tek: 1, price: 10000, maxP: 4, maxS: 1, rate: 2133, dev: 1500, kind: 'weapon', dmg: 500, blast: 50, cost: 120, beam: true,
     desc: 'Onbeperkt bruikbaar, maar kost lading. Bereik en kracht hangen af van je lading.' },
   // TEK II
-  { id: 'mine', name: 'Plasma Mine', tek: 2, price: 230, maxP: 1000, maxS: 250, rate: 19200, dev: 1500, kind: 'weapon', dmg: 2000, blast: 90, speed: 500, cost: 25,
+  { id: 'mine', name: 'Plasma Mine', tek: 2, price: 230, maxP: 1000, maxS: 250, rate: 19200, dev: 1500, kind: 'weapon', dmg: 2000, blast: 90, speed: 750, cost: 25,
     desc: 'Nabijheidsmijn. Wordt scherp op het doelpunt en ontploft als er een schip langs komt — vriend én vijand (ook jijzelf!).' },
   { id: 'autominer', name: 'Auto-Miner', tek: 2, price: 10000, maxP: 4, maxS: 1, rate: 711, dev: 15000, kind: 'passive',
     desc: 'Je mijnstraal blijft aan tot al je pods vol zijn. Let op: al die tijd staan je schilden uit.' },
   // TEK III
-  { id: 'plasma', name: 'Hot-Plasma Missile', tek: 3, price: 1000, maxP: 250, maxS: 100, rate: 4977, dev: 7500, kind: 'weapon', dmg: 4000, blast: 85, speed: 650, cost: 40,
+  { id: 'plasma', name: 'Hot-Plasma Missile', tek: 3, price: 1000, maxP: 250, maxS: 100, rate: 4977, dev: 7500, kind: 'weapon', dmg: 4000, blast: 85, speed: 950, cost: 40,
     desc: 'Variant op de torpedo met vier keer de klap. Volgens Dangerdav de beste koop.' },
   { id: 'antiplague', name: 'Anti-Plague Beam', tek: 3, price: 27000, maxP: 10, maxS: 25, rate: 284, dev: 15000, kind: 'device', cost: 60,
     desc: 'Steriliseert alle besmette planeten in de buurt en je eigen schip. Elke activering kost één antistof-kristal.' },
-  { id: 'spy', name: 'Planetary Spies', tek: 3, price: 10000, maxP: 100, maxS: 25, rate: 711, dev: 15000, kind: 'weapon', planetOnly: true, speed: 600, cost: 20,
+  { id: 'spy', name: 'Planetary Spies', tek: 3, price: 10000, maxP: 100, maxS: 25, rate: 711, dev: 15000, kind: 'weapon', planetOnly: true, speed: 900, cost: 20,
     desc: 'Schiet op een planeet: daarna zie je vijandelijke schepen rond die planeet op je kaart. Spionnen sterven bij de kleinste aanval.' },
   // TEK IV
-  { id: 'plague', name: 'Plague Bomb', tek: 4, price: 200000, maxP: 5, maxS: 25, rate: 497, dev: 29000, kind: 'weapon', planetOnly: true, speed: 550, cost: 40,
+  { id: 'plague', name: 'Plague Bomb', tek: 4, price: 200000, maxP: 5, maxS: 25, rate: 497, dev: 29000, kind: 'weapon', planetOnly: true, speed: 850, cost: 40,
     desc: 'Besmet ~10% van de bevolking. De plaag verspreidt zich op de planeet én via schepen die er in een baan komen. Verschrikkelijk.' },
-  { id: 'raiders', name: 'Planetary Raiders', tek: 4, price: 30000, maxP: 100, maxS: 25, rate: 711, dev: 15000, kind: 'weapon', planetOnly: true, speed: 600, cost: 20,
+  { id: 'raiders', name: 'Planetary Raiders', tek: 4, price: 30000, maxP: 100, maxS: 25, rate: 711, dev: 15000, kind: 'weapon', planetOnly: true, speed: 900, cost: 20,
     desc: 'Huurlingen die de verdediging en schilden van een planeet afbreken, zodat jouw aanval beter werkt.' },
   // TEK V
-  { id: 'neutron', name: 'Neutron Bomb', tek: 5, price: 100000, maxP: 10, maxS: 25, rate: 497, dev: 29000, kind: 'weapon', dmg: 32000, blast: 220, speed: 450, cost: 150, shake: true,
+  { id: 'neutron', name: 'Neutron Bomb', tek: 5, price: 100000, maxP: 10, maxS: 25, rate: 497, dev: 29000, kind: 'weapon', dmg: 32000, blast: 220, speed: 700, cost: 150, shake: true,
     desc: 'Vernietigt een groot deel van het leven op een planeet. Ook effectief tegen de plaag... en tegen jezelf als je te dichtbij richt.' },
   // TEK VI
   { id: 'stealth', name: 'Stealth Invisibility Shield', tek: 6, price: 53000, maxP: 5, maxS: 1, rate: 284, dev: 15000, kind: 'device',
     desc: 'Maakt je onzichtbaar, maar schakelt schilden en wapens uit en kost continu lading. Bij aan/uit zet je even helemaal onbeschermd.' },
-  { id: 'seeker', name: 'Hunter-Seeker Torpedo', tek: 6, price: 20000, maxP: 20, maxS: 25, rate: 355, dev: 15000, kind: 'weapon', dmg: 16000, blast: 80, speed: 620, cost: 50, homing: true,
+  { id: 'seeker', name: 'Hunter-Seeker Torpedo', tek: 6, price: 20000, maxP: 20, maxS: 25, rate: 355, dev: 15000, kind: 'weapon', dmg: 16000, blast: 80, speed: 920, cost: 50, homing: true,
     desc: 'Klik op een vijandelijk schip: de seeker jaagt het op en ontploft bij contact. Wacht als het doel onzichtbaar wordt.' },
   { id: 'wormgate', name: 'Worm Gate Pair', tek: 6, price: 250000, maxP: 10, maxS: 5, rate: 284, dev: 15000, kind: 'device',
     desc: 'Activeer en klik op de sterrenkaart: er ontstaat een wormgat tussen jouw positie en dat punt. Iedereen kan het gebruiken!' },
@@ -88,7 +88,7 @@ WP.ITEMS = [
   { id: 'barrier', name: 'Energy Barrier Shield', tek: 9, price: 1000000, maxP: 10, maxS: 1, rate: 213, dev: 15000, kind: 'passive',
     desc: 'Laat je zonder schade door de energiebarrières tussen de octanten vliegen.' },
   // TEK X
-  { id: 'buster', name: 'Quark Buster Bomb', tek: 10, price: 2000000, maxP: 2, maxS: 4, rate: 14, dev: 29000, kind: 'weapon', dmg: 320000, blast: 400, speed: 400, cost: 400, shake: true,
+  { id: 'buster', name: 'Quark Buster Bomb', tek: 10, price: 2000000, maxP: 2, maxS: 4, rate: 14, dev: 29000, kind: 'weapon', dmg: 320000, blast: 400, speed: 650, cost: 400, shake: true,
     desc: 'Kan een planeet in één schot vernietigen. Blijf ver weg!' },
   { id: 'escape', name: 'Escape Teleporter', tek: 10, price: 50000, maxP: 20, maxS: 1, rate: 142, dev: 15000, kind: 'device',
     desc: 'De "chicken switch": teleporteert je direct naar je thuisplaneet.' },
@@ -115,7 +115,7 @@ WP.MAPS = {
 WP.AI_LEVELS = ['Kanonnenvoer', 'Makkelijk', 'Normaal', 'Moeilijk', 'Krankzinnig'];
 
 WP.DEFAULT_SETTINGS = () => ({
-  map: 'normal', aiLevel: 2, bots: 3, cash: 100000, tek: 1, timeLimit: 30,
+  map: 'normal', gameSpeed: 2, aiLevel: 2, bots: 3, cash: 100000, tek: 1, timeLimit: 30,
   barrierDamage: true, deadLosesItems: false, enemyPOV: false, quickROI: true,
   noWorm: false, noPlague: false, noPlagueCure: false, noWarp: false, noBarrier: false, noBuster: false, noPause: true,
   botPaths: [],

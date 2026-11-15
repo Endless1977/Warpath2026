@@ -2,7 +2,8 @@
 'use strict';
 (function () {
 const R = WP.GALAXY_R, TAU = Math.PI * 2;
-const SPEED_UNIT = 55;                // eenheden/s per snelheidsstap
+const SPEED_UNIT = 85;                // eenheden/s per snelheidsstap (sneller dan het origineel)
+const PT_SPEED = 950;                  // snelheid planeettorpedo's
 const EN_UNIT = 4000, CH_UNIT = 1500, CARGO_UNIT = 1000;
 const SHIELD_HEAT_MAX = 1600;
 const ORBIT_GAP = 110;
@@ -615,9 +616,11 @@ class Sim {
     this.stepPlayers(dt);
     this.stepProjs(dt);
     this.stepDrones(dt);
-    this.secAcc += dt;
+    // economie-tempo (spelsnelheid): 1 = klassiek, 2 = snel, 3 = turbo
+    const eco = this.settings.gameSpeed || 1;
+    this.secAcc += dt * eco;
     if (this.secAcc >= 1) { this.secAcc -= 1; this.stepEconomy(1); }
-    this.minuteAcc += dt;
+    this.minuteAcc += dt * eco;
     if (this.minuteAcc >= 60) { this.minuteAcc -= 60; this.payTaxes(); }
     if (WP.AI) for (const p of this.players) if (p.ai && p.alive) WP.AI.think(this, p, dt);
   }
@@ -640,7 +643,7 @@ class Sim {
       p.shieldHeat = Math.max(0, p.shieldHeat - 90 * dt);
       // lading herladen
       const cm = this.chargeMax(p);
-      if (!p.stealth && !p.scream) p.charge = Math.min(cm, p.charge + (40 + 15 * (p.items.chargepod || 0)) * dt);
+      if (!p.stealth && !p.scream) p.charge = Math.min(cm, p.charge + (65 + 25 * (p.items.chargepod || 0)) * dt);
       const em = this.energyMax(p);
       if (p.orbit) {
         const pl = this.planetById(p.orbit);
@@ -653,7 +656,7 @@ class Sim {
         if (this.aura(pl) === p.path) { const tgt = em * (0.25 + 0.75 * pl.dev.port); if (p.energy < tgt) p.energy = Math.min(tgt, p.energy + em * 0.1 * dt); }
         else p.energy = Math.min(em, p.energy + 15 * dt);
         if (p.mining) {
-          const take = Math.min(160 * dt, pl.ore, p.mineStop - p.cargo);
+          const take = Math.min(500 * dt, pl.ore, p.mineStop - p.cargo);
           p.cargo += take; pl.ore -= take;
           if (pl.pop > 0 || pl.ore <= 0 || p.cargo >= p.mineStop - 0.01) { p.mining = false; if (pl.ore <= 0) this.radio(p.id, `${pl.name} is volledig leeggemijnd.`, '#ffb347'); this.snd('click', p.x, p.z, p.id); }
         }
@@ -793,9 +796,9 @@ class Sim {
       }
       if (pl.dev.defense > 0.2 && pl.gunCd <= 0 && td < 1300 * 1300) {
         pl.gunCd = 5 - 3 * pl.dev.defense;
-        const lead = Math.sqrt(td) / 650, tx = target.x + target.hx * target.speed * SPEED_UNIT * lead, tz = target.z + target.hz * target.speed * SPEED_UNIT * lead;
+        const lead = Math.sqrt(td) / PT_SPEED, tx = target.x + target.hx * target.speed * SPEED_UNIT * lead, tz = target.z + target.hz * target.speed * SPEED_UNIT * lead;
         const dx = tx - pl.x, dz = tz - pl.z, d = Math.hypot(dx, dz) || 1;
-        this.projs.push({ id: this.id(), type: 'torpedo', owner: null, path: a, x: pl.x + dx / d * (pl.r + 20), z: pl.z + dz / d * (pl.r + 20), vx: dx / d * 650, vz: dz / d * 650, tx, tz, life: d / 650, armed: false, dmg: 1000 * (1 + pl.dev.edu), blast: 70, age: 0 });
+        this.projs.push({ id: this.id(), type: 'torpedo', owner: null, path: a, x: pl.x + dx / d * (pl.r + 20), z: pl.z + dz / d * (pl.r + 20), vx: dx / d * PT_SPEED, vz: dz / d * PT_SPEED, tx, tz, life: d / PT_SPEED, armed: false, dmg: 1000 * (1 + pl.dev.edu), blast: 70, age: 0 });
         this.snd('torpedo', pl.x, pl.z);
       }
     }
@@ -813,7 +816,7 @@ class Sim {
         if (o.lastHit && this.t - o.lastHitT < 15) { const q = this.player(o.lastHit); if (q && q.alive && !q.respawn && !q.stealth) t = q; }
         if (!t) { let bd = 900 * 900; for (const dr of this.drones) if (dr.kind === 'drone' && dr.path !== d.path) { const dd = dist2(dr.x, dr.z, o.x, o.z); if (dd < bd) { bd = dd; t = dr; } } }
         const ang = this.t * 0.8 + d.slot * TAU / 6;
-        tx = o.x + Math.cos(ang) * 120; tz = o.z + Math.sin(ang) * 120; sp = 700;
+        tx = o.x + Math.cos(ang) * 120; tz = o.z + Math.sin(ang) * 120; sp = 1000;
         if (t && dist2(t.x, t.z, d.x, d.z) < 800 * 800 && d.cd <= 0) {
           d.cd = 0.9; this.ev({ k: 'beam', x1: d.x, z1: d.z, x2: t.x, z2: t.z, c: d.path, thin: 1 });
           if (t.kind) t.hp -= 500; else this.damageShip(t, 600, d.owner);
@@ -821,11 +824,11 @@ class Sim {
         }
       } else {
         const t = this.player(d.target);
-        if (!t || !t.alive || t.respawn > 0 || t.stealth) { const h = this.planetById(d.home); tx = h ? h.x : d.x; tz = h ? h.z : d.z; d.life = Math.min(d.life, 6); sp = 300; }
+        if (!t || !t.alive || t.respawn > 0 || t.stealth) { const h = this.planetById(d.home); tx = h ? h.x : d.x; tz = h ? h.z : d.z; d.life = Math.min(d.life, 6); sp = 450; }
         else {
           const dd = dist(t.x, t.z, d.x, d.z);
           const a = Math.atan2(d.z - t.z, d.x - t.x) + 0.6;
-          tx = t.x + Math.cos(a) * 280; tz = t.z + Math.sin(a) * 280; sp = 440;
+          tx = t.x + Math.cos(a) * 280; tz = t.z + Math.sin(a) * 280; sp = 650;
           if (dd < 520 && d.cd <= 0) {
             d.cd = 1.6; this.ev({ k: 'beam', x1: d.x, z1: d.z, x2: t.x, z2: t.z, c: d.path, thin: 1 });
             this.damageShip(t, 420, null); this.snd('laser', d.x, d.z);
@@ -848,7 +851,7 @@ class Sim {
       if (pl.pop <= 0) continue;
       const dev = this.devAvg(pl), c100 = this.cost100(pl);
       // investeringen omzetten in ontwikkeling
-      const rate = c100 * (S.quickROI ? 0.08 : 0.01) * dt;
+      const rate = c100 * (S.quickROI ? 0.4 : 0.06) * dt;   // snel: een categorie is binnen enkele seconden klaar
       for (const k in pl.cap) if (pl.cap[k] > 0) {
         const use = Math.min(pl.cap[k], rate);
         pl.cap[k] -= use; pl.dev[k] = Math.min(1, pl.dev[k] + use / c100);
